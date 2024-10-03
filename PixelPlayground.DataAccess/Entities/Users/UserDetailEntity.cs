@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace DataAccess.Entities.Users;
 
-namespace DataAccess.Models;
-
-public partial class UserDetail
+public partial class UserDetailEntity
 {
     public Guid UserDetailsId { get; set; }
 
@@ -19,5 +16,5 @@ public partial class UserDetail
 
     public DateTime? UpdatedAt { get; set; }
 
-    public virtual User User { get; set; } = null!;
+    public virtual UserEntity User { get; set; } = null!;
 }
