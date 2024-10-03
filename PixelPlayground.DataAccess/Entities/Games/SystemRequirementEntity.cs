@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace DataAccess.Entities.Games;
 
-namespace DataAccess.Models;
-
-public partial class SystemRequirement
+public partial class SystemRequirementEntity
 {
     public Guid RequirementId { get; set; }
 
@@ -13,5 +10,5 @@ public partial class SystemRequirement
 
     public string? RecommendedRequirements { get; set; }
 
-    public virtual Game Game { get; set; } = null!;
+    public virtual GameEntity Game { get; set; } = null!;
 }

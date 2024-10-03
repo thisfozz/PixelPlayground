@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace DataAccess.Entities.Users;
 
-namespace DataAccess.Models;
-
-public partial class Address
+public partial class AddressEntity
 {
     public Guid AddressId { get; set; }
 
@@ -21,5 +18,5 @@ public partial class Address
 
     public string? PhoneNumber { get; set; }
 
-    public virtual User User { get; set; } = null!;
+    public virtual UserEntity User { get; set; } = null!;
 }

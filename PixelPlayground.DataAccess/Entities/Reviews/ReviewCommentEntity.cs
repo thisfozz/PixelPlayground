@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using DataAccess.Entities.Users;
 
-namespace DataAccess.Models;
+namespace DataAccess.Entities.Reviews;
 
-public partial class ReviewComment
+public partial class ReviewCommentEntity
 {
     public Guid CommentId { get; set; }
 
@@ -17,7 +16,7 @@ public partial class ReviewComment
 
     public DateTime? CreatedAt { get; set; }
 
-    public virtual Review Review { get; set; } = null!;
+    public virtual ReviewEntity Review { get; set; } = null!;
 
-    public virtual User User { get; set; } = null!;
+    public virtual UserEntity User { get; set; } = null!;
 }
