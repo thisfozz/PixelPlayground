@@ -5,7 +5,7 @@ VisualStudioVersion = 17.8.34316.72
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PixelPlayground", "PixelPlayground\PixelPlayground.csproj", "{E14BB6F8-5E0C-42AA-AF41-9BE13A2CD376}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PixelPlayground.DataAccess", "PixelPlayground.DataAccess\PixelPlayground.DataAccess.csproj", "{5B4A34F6-9F74-45C6-90AA-DD2FB5366EAB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "PixelPlayground.DataAccess\DataAccess.csproj", "{5B4A34F6-9F74-45C6-90AA-DD2FB5366EAB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
