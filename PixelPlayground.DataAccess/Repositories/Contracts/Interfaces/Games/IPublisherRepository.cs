@@ -14,7 +14,7 @@ public interface IPublisherRepository
     Task<IEnumerable<PublisherEntity>> GetAllPublishersAsync();
 
     // Получение ID издателя по его имени
-    Task<Guid> GetIdPublisherByNameAsync(string publisherName);
+    Task<Guid?> GetIdPublisherByNameAsync(string publisherName);
 
     // Получение издателя по его ID
     Task<PublisherEntity?> GetPublisherByIdAsync(Guid publisherId);

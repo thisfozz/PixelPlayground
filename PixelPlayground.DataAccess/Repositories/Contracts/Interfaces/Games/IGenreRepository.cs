@@ -14,7 +14,7 @@ public interface IGenreRepository
     Task<IEnumerable<GenreEntity>> GetAllGenresAsync();
 
     // Получение ID жанра по его имени
-    Task<Guid> GetIdGenreByNameAsync(string genreName);
+    Task<Guid?> GetIdGenreByNameAsync(string genreName);
 
     // Получение жанра по его ID
     Task<GenreEntity?> GetGenreByIdAsync(Guid genreId);
