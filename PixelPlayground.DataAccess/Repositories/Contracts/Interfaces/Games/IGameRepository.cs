@@ -47,7 +47,7 @@ public interface IGameRepository
     // Обновление рейтинга игры на основе отзывов
     Task<bool> UpdateGameRatingAsync(Guid gameId, uint rating);
 
-    Task<bool> UpdateGameAsync(Guid gameId, GameEntity game, List<Guid> genresToRemove, List<Guid> platformsToRemove, List<Guid> featuresToRemove);
+    Task<bool> UpdateGameAsync(Guid gameId, GameEntity game);
 
     // Добавление платформы в игру
     Task<bool> AddPlatformToGameAsync(Guid gameId, PlatformEntity platform);
