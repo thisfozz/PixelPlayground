@@ -26,7 +26,7 @@ public class FeatureRepository : IFeatureRepository
 
     public async Task<bool> CreateFeatureAsync(string featureName)
     {
-        if(await FeatureExistsAsync(featureName))
+        if (await FeatureExistsAsync(featureName))
         {
             return false;
         }
@@ -39,6 +39,7 @@ public class FeatureRepository : IFeatureRepository
 
         _context.Features.Add(newFeature);
         await _context.SaveChangesAsync();
+
         return true;
     }
 
@@ -49,9 +50,9 @@ public class FeatureRepository : IFeatureRepository
 
     public async Task<Guid?> GetIdDeveloperByNameAsync(string featureName)
     {
-        var feature = await _context.Features.FirstOrDefaultAsync(feature => feature.Name == featureName);
+        var existingFeature = await _context.Features.FirstOrDefaultAsync(feature => feature.Name == featureName);
 
-        return feature?.FeatureId;
+        return existingFeature?.FeatureId;
     }
 
     public async Task<FeatureEntity?> GetFeatureByIdAsync(Guid featureId)
@@ -61,29 +62,31 @@ public class FeatureRepository : IFeatureRepository
 
     public async Task<bool> UpdateFeatureAsync(Guid featureId, string newFeatureName)
     {
-        var feature = await FindFeatureByIdAsync(featureId);
+        var existingFeature = await FindFeatureByIdAsync(featureId);
 
-        if(feature == null)
+        if (existingFeature == null)
         {
             return false;
         }
 
-        feature.Name = newFeatureName;
+        existingFeature.Name = newFeatureName;
         await _context.SaveChangesAsync();
+
         return true;
     }
 
     public async Task<bool> DeleteFeatureAsync(Guid featureId)
     {
-        var feature = await FindFeatureByIdAsync(featureId);
+        var existingFeature = await FindFeatureByIdAsync(featureId);
 
-        if(feature == null )
+        if (existingFeature == null)
         {
             return false;
         }
 
-        _context.Features.Remove(feature);
+        _context.Features.Remove(existingFeature);
         await _context.SaveChangesAsync();
+
         return true;
     }
 }

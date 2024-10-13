@@ -39,6 +39,7 @@ public class DeveloperRepository : IDeveloperRepository
 
         _context.Developers.Add(newDeveloper);
         await _context.SaveChangesAsync();
+
         return true;
     }
 
@@ -54,35 +55,38 @@ public class DeveloperRepository : IDeveloperRepository
 
     public async Task<Guid?> GetIdDeveloperByNameAsync(string developerName)
     {
-        var developer = await _context.Developers.FirstOrDefaultAsync(dev => dev.Name == developerName);
-        return developer?.DeveloperId;
+        var existingDeveloper = await _context.Developers.FirstOrDefaultAsync(dev => dev.Name == developerName);
+
+        return existingDeveloper?.DeveloperId;
     }
 
     public async Task<bool> UpdateDeveloperAsync(Guid developerId, string newDeveloperName)
     {
-        var developer = await FindDeveloperByIdAsync(developerId);
+        var existingDeveloper = await FindDeveloperByIdAsync(developerId);
 
-        if (developer == null)
+        if (existingDeveloper == null)
         {
             return false;
         }
 
-        developer.Name = newDeveloperName;
+        existingDeveloper.Name = newDeveloperName;
         await _context.SaveChangesAsync();
+
         return true;
     }
 
     public async Task<bool> DeleteDeveloperAsync(Guid developerId)
     {
-        var developer = await FindDeveloperByIdAsync(developerId);
+        var existingDeveloper = await FindDeveloperByIdAsync(developerId);
 
-        if (developer == null)
+        if (existingDeveloper == null)
         {
             return false;
         }
 
-        _context.Developers.Remove(developer);
+        _context.Developers.Remove(existingDeveloper);
         await _context.SaveChangesAsync();
+
         return true;
     }
 }
