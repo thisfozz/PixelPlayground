@@ -9,10 +9,16 @@ namespace DataAccess.Repositories.Implementations.Games;
 public class GameRepository : IGameRepository
 {
     private readonly PixelBaseContext _context;
+    private readonly IPlatformRepository _platformRepository;
+    private readonly IGenreRepository _genreRepository;
+    private readonly IFeatureRepository _featureRepository;
 
-    public GameRepository(PixelBaseContext context)
+    public GameRepository(PixelBaseContext context, IPlatformRepository platformRepository, IGenreRepository genreRepository, IFeatureRepository featureRepository)
     {
         _context = context;
+        _platformRepository = platformRepository;
+        _genreRepository = genreRepository;
+        _featureRepository = featureRepository;
     }
 
     public async Task<bool> CreateGameAsync(GameEntity game)
@@ -73,60 +79,69 @@ public class GameRepository : IGameRepository
     public async Task<string?> GetTitleByGameId(Guid gameId)
     {
         var existingGame = await _context.Games.FirstOrDefaultAsync(game => game.GameId == gameId);
+
         return existingGame?.Title;
     }
 
     public async Task<DeveloperEntity?> GetDeveloperByGameIdAsync(Guid gameId)
     {
         var existingGame = await _context.Games.Include(game => game.Developer).FirstOrDefaultAsync(game => game.GameId == gameId);
+
         return existingGame?.Developer;
     }
 
     public async Task<PublisherEntity?> GetPublisherByGameIdAsync(Guid gameId)
     {
         var existingGame = await _context.Games.Include(game => game.Publisher).FirstOrDefaultAsync(game => game.GameId == gameId);
+
         return existingGame?.Publisher;
     }
 
     public async Task<IEnumerable<FeatureEntity?>> GetFeaturesByGameIdAsync(Guid gameId)
     {
         var existingGame = await _context.Games.Include(game => game.Features).FirstOrDefaultAsync(game => game.GameId == gameId);
+
         return existingGame?.Features ?? Enumerable.Empty<FeatureEntity>();
     }
 
     public async Task<IEnumerable<GameImageEntity?>> GetImagesByGameIdAsync(Guid gameId)
     {
         var existingGame = await _context.Games.Include(game => game.GameImages).FirstOrDefaultAsync(game => game.GameId == gameId);
+
         return existingGame?.GameImages ?? Enumerable.Empty<GameImageEntity>();
     }
 
     public async Task<IEnumerable<GenreEntity?>> GetGenresByGameIdAsync(Guid gameId)
     {
         var existingGame = await _context.Games.Include(game => game.Genres).FirstOrDefaultAsync(game => game.GameId == gameId);
+
         return existingGame?.Genres ?? Enumerable.Empty<GenreEntity>();
     }
 
     public async Task<IEnumerable<PlatformEntity?>> GetPlatformsByGameIdAsync(Guid gameId)
     {
         var existingGame = await _context.Games.Include(game => game.Platforms).FirstOrDefaultAsync(game => game.GameId == gameId);
+
         return existingGame?.Platforms ?? Enumerable.Empty<PlatformEntity>();
     }
 
     public async Task<IEnumerable<SystemRequirementEntity>> GetSystemRequirementsByGameIdAsync(Guid gameId)
     {
         var existingGame = await _context.Games.Include(game => game.SystemRequirements).FirstOrDefaultAsync(game => game.GameId == gameId);
+
         return existingGame?.SystemRequirements ?? Enumerable.Empty<SystemRequirementEntity>();
     }
 
     public async Task<IEnumerable<ReviewEntity?>> GetReviewsByGameIdAsync(Guid gameId)
     {
         var existingGame = await _context.Games.Include(game => game.Reviews).FirstOrDefaultAsync(game => game.GameId == gameId);
+
         return existingGame?.Reviews ?? Enumerable.Empty<ReviewEntity>();
     }
 
     public async Task<bool> UpdateGameRatingAsync(Guid gameId, uint rating)
     {
-        var existingGame = await _context.Games.FirstOrDefaultAsync(game => game.GameId == gameId);
+        var existingGame = await GetGameByIdAsync(gameId);
         if (existingGame == null)
         {
             return false;
@@ -134,18 +149,13 @@ public class GameRepository : IGameRepository
 
         existingGame.Rating = rating;
         await _context.SaveChangesAsync();
+
         return true;
     }
 
     public async Task<bool> UpdateGameAsync(Guid gameId, GameEntity game)
     {
-        var existingGame = await _context.Games
-            .Include(g => g.GameImages)
-            .Include(g => g.Features)
-            .Include(g => g.SystemRequirements)
-            .Include(g => g.Genres)
-            .Include(g => g.Platforms)
-            .FirstOrDefaultAsync(game => game.GameId == gameId);
+        var existingGame = await GetGameByIdAsync(gameId);
 
         if (existingGame == null)
         {
@@ -163,18 +173,24 @@ public class GameRepository : IGameRepository
         return true;
     }
 
-    public async Task<bool> AddPlatformToGameAsync(Guid gameId, PlatformEntity platform)
+    public async Task<bool> AddPlatformToGameAsync(Guid gameId, Guid platformId)
     {
         var existingGame = await _context.Games.Include(g => g.Platforms).FirstOrDefaultAsync(g => g.GameId == gameId);
-        if (existingGame == null || existingGame.Platforms.Any(p => p.PlatformId == platform.PlatformId))
+        if (existingGame == null || existingGame.Platforms.Any(p => p.PlatformId == platformId))
         {
             return false;
         }
 
-        existingGame.Platforms.Add(platform);
-        await _context.SaveChangesAsync();
+        var platfrom = _platformRepository.GetPlatformByIdAsync(platformId).Result;
+        if (platfrom != null)
+        {
+            existingGame.Platforms.Add(platfrom);
+            await _context.SaveChangesAsync();
 
-        return true;
+            return true;
+        }
+
+        return false;
     }
 
     public async Task<bool> RemovePlatformFromGameAsync(Guid gameId, Guid platformId)
@@ -185,7 +201,7 @@ public class GameRepository : IGameRepository
             return false;
         }
 
-        var platformToRemove = existingGame.Platforms.FirstOrDefault(p => p.PlatformId == platformId);
+        var platformToRemove = _platformRepository.GetPlatformByIdAsync(gameId).Result;
         if (platformToRemove != null)
         {
             existingGame.Platforms.Remove(platformToRemove);
@@ -197,18 +213,24 @@ public class GameRepository : IGameRepository
         return false;
     }
 
-    public async Task<bool> AddGenreToGameAsync(Guid gameId, GenreEntity genre)
+    public async Task<bool> AddGenreToGameAsync(Guid gameId, Guid genreId)
     {
         var existingGame = await _context.Games.Include(g => g.Genres).FirstOrDefaultAsync(g => g.GameId == gameId);
-        if (existingGame == null || existingGame.Genres.Any(g => g.GenreId == genre.GenreId))
+        if (existingGame == null || existingGame.Genres.Any(g => g.GenreId == genreId))
         {
             return false;
         }
 
-        existingGame.Genres.Add(genre);
-        await _context.SaveChangesAsync();
+        var genre = _genreRepository.GetGenreByIdAsync(genreId).Result;
+        if (genre != null)
+        {
+            existingGame.Genres.Add(genre);
+            await _context.SaveChangesAsync();
 
-        return true;
+            return true;
+        }
+
+        return false;
     }
 
     public async Task<bool> RemoveGenreFromGameAsync(Guid gameId, Guid genreId)
@@ -219,7 +241,7 @@ public class GameRepository : IGameRepository
             return false;
         }
 
-        var genreToRemove = existingGame.Genres.FirstOrDefault(g => g.GenreId == genreId);
+        var genreToRemove = _genreRepository.GetGenreByIdAsync(genreId).Result;
         if (genreToRemove != null)
         {
             existingGame.Genres.Remove(genreToRemove);
@@ -231,18 +253,24 @@ public class GameRepository : IGameRepository
         return false;
     }
 
-    public async Task<bool> AddFeatureToGameAsync(Guid gameId, FeatureEntity feature)
+    public async Task<bool> AddFeatureToGameAsync(Guid gameId, Guid featureId)
     {
         var existingGame = await _context.Games.Include(g => g.Features).FirstOrDefaultAsync(g => g.GameId == gameId);
-        if (existingGame == null || existingGame.Features.Any(f => f.FeatureId == feature.FeatureId))
+        if (existingGame == null || existingGame.Features.Any(f => f.FeatureId == featureId))
         {
             return false;
         }
 
-        existingGame.Features.Add(feature);
-        await _context.SaveChangesAsync();
+        var feature = _featureRepository.GetFeatureByIdAsync(featureId).Result;
+        if(feature != null)
+        {
+            existingGame.Features.Add(feature);
+            await _context.SaveChangesAsync();
 
-        return true;
+            return true;
+        }
+
+        return false;
     }
 
     public async Task<bool> RemoveFeatureFromGameAsync(Guid gameId, Guid featureId)
@@ -253,7 +281,7 @@ public class GameRepository : IGameRepository
             return false;
         }
 
-        var featureToRemove = existingGame.Features.FirstOrDefault(f => f.FeatureId == featureId);
+        var featureToRemove = _featureRepository.GetFeatureByIdAsync(featureId).Result;
         if (featureToRemove != null)
         {
             existingGame.Features.Remove(featureToRemove);
@@ -267,7 +295,7 @@ public class GameRepository : IGameRepository
 
     public async Task<bool> DeleteGameAsync(Guid gameId)
     {
-        var existingGame = await _context.Games.FirstOrDefaultAsync(game => game.GameId == gameId);
+        var existingGame = await GetGameByIdAsync(gameId);
         if (existingGame == null)
         {
             return false;

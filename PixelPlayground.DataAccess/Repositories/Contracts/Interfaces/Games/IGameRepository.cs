@@ -50,19 +50,19 @@ public interface IGameRepository
     Task<bool> UpdateGameAsync(Guid gameId, GameEntity game);
 
     // Добавление платформы в игру
-    Task<bool> AddPlatformToGameAsync(Guid gameId, PlatformEntity platform);
+    Task<bool> AddPlatformToGameAsync(Guid gameId, Guid platformId);
 
     // Удаление платформы из игры
     Task<bool> RemovePlatformFromGameAsync(Guid gameId, Guid platformId);
 
     // Добавление жанра в игру
-    Task<bool> AddGenreToGameAsync(Guid gameId, GenreEntity genre);
+    Task<bool> AddGenreToGameAsync(Guid gameId, Guid genreId);
 
     // Удаление жанра из игры
     Task<bool> RemoveGenreFromGameAsync(Guid gameId, Guid genreId);
 
     // Добавление фичи в игру
-    Task<bool> AddFeatureToGameAsync(Guid gameId, FeatureEntity feature);
+    Task<bool> AddFeatureToGameAsync(Guid gameId, Guid featureId);
 
     // Удаление фичи из игры
     Task<bool> RemoveFeatureFromGameAsync(Guid gameId, Guid featureId);
