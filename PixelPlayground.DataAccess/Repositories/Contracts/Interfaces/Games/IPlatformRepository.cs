@@ -14,7 +14,7 @@ public interface IPlatformRepository
     Task<IEnumerable<PlatformEntity>> GetAllPlatformsAsync();
 
     // Получение ID платформы по её имени
-    Task<Guid> GetIdPlatformByNameAsync(string platformName);
+    Task<Guid?> GetIdPlatformByNameAsync(string platformName);
 
     // Получение платформы по её ID
     Task<PlatformEntity?> GetPlatformByIdAsync(Guid platformId);
