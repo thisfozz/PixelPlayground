@@ -12,7 +12,7 @@ public partial class AddressEntity
 
     public string? Region { get; set; }
 
-    public string? Address1 { get; set; }
+    public string? Address { get; set; }
 
     public string? PostalCode { get; set; }
 

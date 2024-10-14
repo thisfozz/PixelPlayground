@@ -15,7 +15,7 @@ public class AddressesConfiguration : IEntityTypeConfiguration<AddressEntity>
         builder.Property(e => e.AddressId)
             .HasDefaultValueSql("gen_random_uuid()")
             .HasColumnName("address_id");
-        builder.Property(e => e.Address1)
+        builder.Property(e => e.Address)
             .HasMaxLength(100)
             .HasColumnName("address");
         builder.Property(e => e.City)
