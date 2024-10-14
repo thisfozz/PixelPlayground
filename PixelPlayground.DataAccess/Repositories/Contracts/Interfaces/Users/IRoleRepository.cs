@@ -2,26 +2,58 @@
 
 namespace DataAccess.Repositories.Contracts.Interfaces.Users;
 
+
+/// <summary>
+/// Интерфейс для работы с ролями пользователей.
+/// </summary>
 public interface IRoleRepository
 {
-    // Проверка, существует ли роль по её имени
+    /// <summary>
+    /// Проверяет, существует ли роль по её имени.
+    /// </summary>
+    /// <param name="roleName">Имя роли, которую нужно проверить.</param>
+    /// <returns>true, если роль существует; иначе false.</returns>
     Task<bool> RoleExistsAsync(string roleName);
 
-    // Создание новой роли
+    /// <summary>
+    /// Создает новую роль.
+    /// </summary>
+    /// <param name="roleName">Имя новой роли.</param>
+    /// <returns>true, если роль успешно создана; иначе false.</returns>
     Task<bool> CreateRoleAsync(string roleName);
 
-    // Получение всех ролей
+    /// <summary>
+    /// Получает все роли.
+    /// </summary>
+    /// <returns>Список всех ролей.</returns>
     Task<IEnumerable<RoleEntity>> GetAllRolesAsync();
 
-    // Получение роли по её ID
+    /// <summary>
+    /// Получает роль по её ID.
+    /// </summary>
+    /// <param name="roleId">Идентификатор роли, которую нужно получить.</param>
+    /// <returns>Объект RoleEntity, представляющий роль, если она существует; иначе null.</returns>
     Task<RoleEntity?> GetRoleByIdAsync(int roleId);
 
-    // Получение id роли по её имени
+    /// <summary>
+    /// Получает ID роли по её имени.
+    /// </summary>
+    /// <param name="roleName">Имя роли, ID которой нужно получить.</param>
+    /// <returns>ID роли.</returns>
     Task<int> GetIdRoleByNameAsync(string roleName);
 
-    // Обновление роли
+    /// <summary>
+    /// Обновляет существующую роль.
+    /// </summary>
+    /// <param name="roleId">Идентификатор роли, которую нужно обновить.</param>
+    /// <param name="newRoleName">Новое имя для роли.</param>
+    /// <returns>true, если роль успешно обновлена; иначе false.</returns>
     Task<bool> UpdateRoleAsync(int roleId, string newRoleName);
 
-    // Удаление роли по её ID
+    /// <summary>
+    /// Удаляет роль по её ID.
+    /// </summary>
+    /// <param name="roleId">Идентификатор роли, которую нужно удалить.</param>
+    /// <returns>true, если роль успешно удалена; иначе false.</returns>
     Task<bool> DeleteRoleAsync(int roleId);
 }

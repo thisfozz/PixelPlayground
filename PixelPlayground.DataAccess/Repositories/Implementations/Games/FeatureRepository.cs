@@ -48,7 +48,7 @@ public class FeatureRepository : IFeatureRepository
         return await _context.Features.ToListAsync();
     }
 
-    public async Task<Guid?> GetIdDeveloperByNameAsync(string featureName)
+    public async Task<Guid?> GetIdFeatureByNameAsync(string featureName)
     {
         var existingFeature = await _context.Features.FirstOrDefaultAsync(feature => feature.Name == featureName);
 

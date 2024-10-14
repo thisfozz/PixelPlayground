@@ -2,26 +2,58 @@
 
 namespace DataAccess.Repositories.Contracts.Interfaces.Games;
 
+
+/// <summary>
+/// Интерфейс для работы с фичами.
+/// </summary>
 public interface IFeatureRepository
 {
-    // Проверка, существует ли фича по её имени
+    /// <summary>
+    /// Проверяет, существует ли фича по её имени.
+    /// </summary>
+    /// <param name="featureName">Имя фичи.</param>
+    /// <returns>true, если фича существует; иначе false.</returns>
     Task<bool> FeatureExistsAsync(string featureName);
 
-    // Создание новой фичи
+    /// <summary>
+    /// Создает новую фичу.
+    /// </summary>
+    /// <param name="featureName">Имя фичи, которую нужно создать.</param>
+    /// <returns>true, если фича успешно создана; иначе false.</returns>
     Task<bool> CreateFeatureAsync(string featureName);
 
-    // Получение всех фичи
+    /// <summary>
+    /// Получает все фичи.
+    /// </summary>
+    /// <returns>Список всех фич.</returns>
     Task<IEnumerable<FeatureEntity>> GetAllFeaturesAsync();
 
-    // Получение ID фичи игры по его имени
-    Task<Guid?> GetIdDeveloperByNameAsync(string featureName);
+    /// <summary>
+    /// Получает идентификатор фичи по её имени.
+    /// </summary>
+    /// <param name="featureName">Имя фичи.</param>
+    /// <returns>ID фичи или null, если фича не найдена.</returns>
+    Task<Guid?> GetIdFeatureByNameAsync(string featureName);
 
-    // Получение фичи по её ID
+    /// <summary>
+    /// Получает фичу по её идентификатору.
+    /// </summary>
+    /// <param name="featureId">Идентификатор фичи.</param>
+    /// <returns>Объект фичи или null, если фича не найдена.</returns>
     Task<FeatureEntity?> GetFeatureByIdAsync(Guid featureId);
 
-    // Обновление фичи
+    /// <summary>
+    /// Обновляет фичу.
+    /// </summary>
+    /// <param name="featureId">Идентификатор фичи, которую нужно обновить.</param>
+    /// <param name="newFeatureName">Новое имя фичи.</param>
+    /// <returns>true, если фича успешно обновлена; иначе false.</returns>
     Task<bool> UpdateFeatureAsync(Guid featureId, string newFeatureName);
 
-    // Удаление фичи по её ID (мягкое удаление)
+    /// <summary>
+    /// Удаляет фичу по её идентификатору (мягкое удаление).
+    /// </summary>
+    /// <param name="featureId">Идентификатор фичи, которую нужно удалить.</param>
+    /// <returns>true, если фича успешно удалена; иначе false.</returns>
     Task<bool> DeleteFeatureAsync(Guid featureId);
 }

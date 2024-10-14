@@ -2,26 +2,58 @@
 
 namespace DataAccess.Repositories.Contracts.Interfaces.Games;
 
+
+/// <summary>
+/// Интерфейс для работы с издателями.
+/// </summary>
 public interface IPublisherRepository
 {
-    // Проверка, существует ли издатель по его имени
+    /// <summary>
+    /// Проверяет, существует ли издатель по его имени.
+    /// </summary>
+    /// <param name="publisherName">Название издателя.</param>
+    /// <returns>true, если издатель существует; иначе false.</returns>
     Task<bool> PublisherExistsAsync(string publisherName);
 
-    // Создание нового издателя
+    /// <summary>
+    /// Создает нового издателя.
+    /// </summary>
+    /// <param name="publisherName">Название издателя, которого нужно создать.</param>
+    /// <returns>true, если издатель успешно создан; иначе false.</returns>
     Task<bool> CreatePublisherAsync(string publisherName);
 
-    // Получение всех издателей
+    /// <summary>
+    /// Получает всех издателей.
+    /// </summary>
+    /// <returns>Список всех издателей.</returns>
     Task<IEnumerable<PublisherEntity>> GetAllPublishersAsync();
 
-    // Получение ID издателя по его имени
+    /// <summary>
+    /// Получает идентификатор издателя по его имени.
+    /// </summary>
+    /// <param name="publisherName">Название издателя.</param>
+    /// <returns>Идентификатор издателя, если издатель найден; иначе null.</returns>
     Task<Guid?> GetIdPublisherByNameAsync(string publisherName);
 
-    // Получение издателя по его ID
+    /// <summary>
+    /// Получает издателя по его идентификатору.
+    /// </summary>
+    /// <param name="publisherId">Идентификатор издателя.</param>
+    /// <returns>Объект издателя, если издатель найден; иначе null.</returns>
     Task<PublisherEntity?> GetPublisherByIdAsync(Guid publisherId);
 
-    // Обновление издателя
+    /// <summary>
+    /// Обновляет существующего издателя.
+    /// </summary>
+    /// <param name="publisherId">Идентификатор издателя.</param>
+    /// <param name="newPublisherName">Новое название издателя.</param>
+    /// <returns>true, если издатель успешно обновлен; иначе false.</returns>
     Task<bool> UpdatePublisherAsync(Guid publisherId, string newPublisherName);
 
-    // Удаление издателя по его ID (мягкое удаление)
+    /// <summary>
+    /// Удаляет издателя по его идентификатору (мягкое удаление).
+    /// </summary>
+    /// <param name="publisherId">Идентификатор издателя.</param>
+    /// <returns>true, если издатель успешно удален; иначе false.</returns>
     Task<bool> DeletePublisherAsync(Guid publisherId);
 }
