@@ -9,6 +9,20 @@ namespace DataAccess.Repositories.Contracts.Interfaces.Users;
 public interface IUserRepository
 {
     /// <summary>
+    /// Проверяет существование пользователя по логину.
+    /// </summary>
+    /// <param name="login">Логин пользователя, которого нужно проверить.</param>
+    /// <returns>true, если пользователь с данным логином существует; иначе false.</returns>
+    Task<bool> UserExistsByUsernameAsync(string login);
+
+    /// <summary>
+    /// Проверяет существование пользователя по email.
+    /// </summary>
+    /// <param name="email">Email пользователя, который нужно проверить.</param>
+    /// <returns>true, если пользователь с данным email существует; иначе false.</returns>
+    Task<bool> UserExistsByEmailAsync(string email);
+
+    /// <summary>
     /// Создает нового пользователя.
     /// </summary>
     /// <param name="user">Объект пользователя, который нужно создать.</param>
