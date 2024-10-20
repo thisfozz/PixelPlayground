@@ -14,11 +14,6 @@ public class PublisherRepository : IPublisherRepository
         _context = context;
     }
 
-    private async Task<PublisherEntity?> FindPublisherByIdAsync(Guid publisherId)
-    {
-        return await _context.Publishers.FirstOrDefaultAsync(publisher => publisher.PublisherId == publisherId);
-    }
-
     public async Task<bool> PublisherExistsAsync(string publisherName)
     {
         return await _context.Publishers.AnyAsync(publisher => publisher.Name == publisherName);
@@ -38,9 +33,7 @@ public class PublisherRepository : IPublisherRepository
         };
 
         _context.Publishers.Add(newPublisher);
-        await _context.SaveChangesAsync();
-
-        return true;
+        return await _context.SaveChangesAsync() > 0;
     }
 
     public async Task<IEnumerable<PublisherEntity>> GetAllPublishersAsync()
@@ -57,36 +50,24 @@ public class PublisherRepository : IPublisherRepository
 
     public async Task<PublisherEntity?> GetPublisherByIdAsync(Guid publisherId)
     {
-        return await FindPublisherByIdAsync(publisherId);
+        return await _context.Publishers.FindAsync(publisherId);
     }
 
     public async Task<bool> UpdatePublisherAsync(Guid publisherId, string newPublisherName)
     {
-        var existingPublisher = await FindPublisherByIdAsync(publisherId);
-
-        if (existingPublisher == null)
-        {
-            return false;
-        }
+        var existingPublisher = await _context.Publishers.FindAsync(publisherId);
+        if (existingPublisher == null) return false;
 
         existingPublisher.Name = newPublisherName;
-        await _context.SaveChangesAsync();
-
-        return true;
+        return await _context.SaveChangesAsync() > 0;
     }
 
     public async Task<bool> DeletePublisherAsync(Guid publisherId)
     {
-        var existingPublisher = await FindPublisherByIdAsync(publisherId);
-
-        if (existingPublisher == null)
-        {
-            return false;
-        }
+        var existingPublisher = await _context.Publishers.FindAsync(publisherId);
+        if (existingPublisher == null) return false;
 
         _context.Publishers.Remove(existingPublisher);
-        await _context.SaveChangesAsync();
-
-        return true;
+        return await _context.SaveChangesAsync() > 0;
     }
 }

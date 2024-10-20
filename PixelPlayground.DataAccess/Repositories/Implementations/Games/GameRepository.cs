@@ -30,8 +30,7 @@ public class GameRepository : IGameRepository
         }
 
         _context.Games.Add(game);
-        await _context.SaveChangesAsync();
-        return true;
+        return await _context.SaveChangesAsync() > 0;
     }
 
     public async Task<IEnumerable<GameEntity>> GetAllGamesAsync()
@@ -141,26 +140,17 @@ public class GameRepository : IGameRepository
 
     public async Task<bool> UpdateGameRatingAsync(Guid gameId, uint rating)
     {
-        var existingGame = await GetGameByIdAsync(gameId);
-        if (existingGame == null)
-        {
-            return false;
-        }
+        var existingGame = await _context.Games.FindAsync(gameId);
+        if (existingGame == null) return false;
 
         existingGame.Rating = rating;
-        await _context.SaveChangesAsync();
-
-        return true;
+        return await _context.SaveChangesAsync() > 0;
     }
 
     public async Task<bool> UpdateGameAsync(Guid gameId, GameEntity game)
     {
-        var existingGame = await GetGameByIdAsync(gameId);
-
-        if (existingGame == null)
-        {
-            return false;
-        }
+        var existingGame = await _context.Games.FindAsync(gameId);
+        if (existingGame == null) return false;
 
         existingGame.Title = game.Title;
         existingGame.CoverUrl = game.CoverUrl;
@@ -168,9 +158,7 @@ public class GameRepository : IGameRepository
         existingGame.ReleaseDateStr = game.ReleaseDateStr;
         existingGame.Description = game.Description;
 
-        await _context.SaveChangesAsync();
-
-        return true;
+        return await _context.SaveChangesAsync() > 0;
     }
 
     public async Task<bool> AddPlatformToGameAsync(Guid gameId, Guid platformId)
@@ -181,13 +169,11 @@ public class GameRepository : IGameRepository
             return false;
         }
 
-        var platfrom = _platformRepository.GetPlatformByIdAsync(platformId).Result;
-        if (platfrom != null)
+        var platform = await _platformRepository.GetPlatformByIdAsync(platformId);
+        if (platform != null)
         {
-            existingGame.Platforms.Add(platfrom);
-            await _context.SaveChangesAsync();
-
-            return true;
+            existingGame.Platforms.Add(platform);
+            return await _context.SaveChangesAsync() > 0;
         }
 
         return false;
@@ -201,13 +187,11 @@ public class GameRepository : IGameRepository
             return false;
         }
 
-        var platformToRemove = _platformRepository.GetPlatformByIdAsync(gameId).Result;
+        var platformToRemove = await _platformRepository.GetPlatformByIdAsync(gameId);
         if (platformToRemove != null)
         {
             existingGame.Platforms.Remove(platformToRemove);
-            await _context.SaveChangesAsync();
-
-            return true;
+            return await _context.SaveChangesAsync() > 0;
         }
 
         return false;
@@ -221,13 +205,11 @@ public class GameRepository : IGameRepository
             return false;
         }
 
-        var genre = _genreRepository.GetGenreByIdAsync(genreId).Result;
+        var genre = await _genreRepository.GetGenreByIdAsync(genreId);
         if (genre != null)
         {
             existingGame.Genres.Add(genre);
-            await _context.SaveChangesAsync();
-
-            return true;
+            return await _context.SaveChangesAsync() > 0;
         }
 
         return false;
@@ -241,13 +223,11 @@ public class GameRepository : IGameRepository
             return false;
         }
 
-        var genreToRemove = _genreRepository.GetGenreByIdAsync(genreId).Result;
+        var genreToRemove = await _genreRepository.GetGenreByIdAsync(genreId);
         if (genreToRemove != null)
         {
             existingGame.Genres.Remove(genreToRemove);
-            await _context.SaveChangesAsync();
-
-            return true;
+            return await _context.SaveChangesAsync() > 0;
         }
 
         return false;
@@ -261,13 +241,11 @@ public class GameRepository : IGameRepository
             return false;
         }
 
-        var feature = _featureRepository.GetFeatureByIdAsync(featureId).Result;
+        var feature = await _featureRepository.GetFeatureByIdAsync(featureId);
         if(feature != null)
         {
             existingGame.Features.Add(feature);
-            await _context.SaveChangesAsync();
-
-            return true;
+            return await _context.SaveChangesAsync() > 0;
         }
 
         return false;
@@ -281,13 +259,11 @@ public class GameRepository : IGameRepository
             return false;
         }
 
-        var featureToRemove = _featureRepository.GetFeatureByIdAsync(featureId).Result;
+        var featureToRemove = await _featureRepository.GetFeatureByIdAsync(featureId);
         if (featureToRemove != null)
         {
             existingGame.Features.Remove(featureToRemove);
-            await _context.SaveChangesAsync();
-
-            return true;
+            return await _context.SaveChangesAsync() > 0;
         }
 
         return false;
@@ -295,15 +271,10 @@ public class GameRepository : IGameRepository
 
     public async Task<bool> DeleteGameAsync(Guid gameId)
     {
-        var existingGame = await GetGameByIdAsync(gameId);
-        if (existingGame == null)
-        {
-            return false;
-        }
+        var existingGame = await _context.Games.FindAsync(gameId);
+        if (existingGame == null) return false;
 
         _context.Games.Remove(existingGame);
-        await _context.SaveChangesAsync();
-
-        return true;
+        return await _context.SaveChangesAsync() > 0;
     }
 }

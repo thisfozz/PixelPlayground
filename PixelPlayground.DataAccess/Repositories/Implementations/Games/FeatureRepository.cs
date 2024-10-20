@@ -14,17 +14,12 @@ public class FeatureRepository : IFeatureRepository
         _context = context;
     }
 
-    private async Task<FeatureEntity?> FindFeatureByIdAsync(Guid featureId)
-    {
-        return await _context.Features.FirstOrDefaultAsync(feature => feature.FeatureId == featureId);
-    }
-
     public Task<bool> FeatureExistsAsync(string featureName)
     {
         return _context.Features.AnyAsync(feature => feature.Name == featureName);
     }
 
-    public async Task<bool> CreateFeatureAsync(string featureName)
+    public async Task<bool> AddFeatureAsync(string featureName)
     {
         if (await FeatureExistsAsync(featureName))
         {
@@ -38,9 +33,7 @@ public class FeatureRepository : IFeatureRepository
         };
 
         _context.Features.Add(newFeature);
-        await _context.SaveChangesAsync();
-
-        return true;
+        return await _context.SaveChangesAsync() > 0;
     }
 
     public async Task<IEnumerable<FeatureEntity>> GetAllFeaturesAsync()
@@ -57,36 +50,24 @@ public class FeatureRepository : IFeatureRepository
 
     public async Task<FeatureEntity?> GetFeatureByIdAsync(Guid featureId)
     {
-        return await FindFeatureByIdAsync(featureId);
+        return await _context.Features.FindAsync(featureId);
     }
 
     public async Task<bool> UpdateFeatureAsync(Guid featureId, string newFeatureName)
     {
-        var existingFeature = await FindFeatureByIdAsync(featureId);
-
-        if (existingFeature == null)
-        {
-            return false;
-        }
+        var existingFeature = await _context.Features.FindAsync(featureId);
+        if (existingFeature == null) return false;
 
         existingFeature.Name = newFeatureName;
-        await _context.SaveChangesAsync();
-
-        return true;
+        return await _context.SaveChangesAsync() > 0;
     }
 
     public async Task<bool> DeleteFeatureAsync(Guid featureId)
     {
-        var existingFeature = await FindFeatureByIdAsync(featureId);
-
-        if (existingFeature == null)
-        {
-            return false;
-        }
+        var existingFeature = await _context.Features.FindAsync(featureId);
+        if (existingFeature == null) return false;
 
         _context.Features.Remove(existingFeature);
-        await _context.SaveChangesAsync();
-
-        return true;
+        return await _context.SaveChangesAsync() > 0;
     }
 }

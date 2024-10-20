@@ -32,9 +32,10 @@ public interface ISystemRequirementRepository
     /// <summary>
     /// Обновляет системные требования для игры.
     /// </summary>
-    /// <param name="systemRequirement">Объект с новыми системными требованиями.</param>
+    /// <param name="gameId">Идентификатор игры, для которой обновляются системные требования.</param>
+    /// <param name="updatedRequirements">Объект с новыми системными требованиями.</param>
     /// <returns>true, если системные требования успешно обновлены; иначе false.</returns>
-    Task<bool> UpdateSystemRequirementsAsync(SystemRequirementEntity systemRequirement);
+    Task<bool> UpdateSystemRequirementsAsync(Guid gameId, SystemRequirementEntity updatedRequirements);
 
     /// <summary>
     /// Удаляет системные требования по идентификатору игры.

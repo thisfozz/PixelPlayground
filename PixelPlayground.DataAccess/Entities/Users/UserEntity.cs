@@ -1,4 +1,5 @@
-﻿using DataAccess.Entities.Reviews;
+﻿using DataAccess.Entities.Games;
+using DataAccess.Entities.Reviews;
 
 namespace DataAccess.Entities.Users;
 
@@ -33,4 +34,6 @@ public partial class UserEntity
     public virtual RoleEntity Role { get; set; } = null!;
 
     public virtual ICollection<UserDetailEntity> UserDetails { get; set; } = new List<UserDetailEntity>();
+
+    public virtual ICollection<PurchasedGameEntity> PurchasedGames { get; set; } = new List<PurchasedGameEntity>();
 }

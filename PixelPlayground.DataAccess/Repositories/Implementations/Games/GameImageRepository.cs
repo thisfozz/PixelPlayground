@@ -28,42 +28,33 @@ public class GameImageRepository : IGameImageRepository
         }
 
         _context.GameImages.Add(gameImage);
-        await _context.SaveChangesAsync();
-
-        return true;
+        return await _context.SaveChangesAsync() > 0;
     }
 
     public async Task<bool> UploadGameImageAsync(IEnumerable<GameImageEntity> gameImages)
     {
-        foreach (var gameImage in gameImages)
-        {
-            var existingImage = await _context.GameImages
-                .FirstOrDefaultAsync(gm => gm.ImageUrl == gameImage.ImageUrl);
+        var imageUrls = gameImages.Select(img => img.ImageUrl).ToList();
+        var existingImages = await _context.GameImages
+            .Where(gm => imageUrls.Contains(gm.ImageUrl))
+            .Select(gm => gm.ImageUrl)
+            .ToListAsync();
 
-            if (existingImage != null)
-            {
-                continue;
-            }
+        var newImages = gameImages
+            .Where(img => !existingImages.Contains(img.ImageUrl))
+            .ToList();
 
-            _context.GameImages.Add(gameImage);
-        }
+        if (newImages.Count == 0) return false;
 
-        await _context.SaveChangesAsync();
-        return true;
+        _context.GameImages.AddRange(newImages);
+        return await _context.SaveChangesAsync() > 0;
     }
 
     public async Task<bool> DeleteGameImageAsync(Guid imageId)
     {
-        var existingGameImage = await _context.GameImages.FirstOrDefaultAsync(gm => gm.ImageId == imageId);
-
-        if (existingGameImage == null)
-        {
-            return false;
-        }
+        var existingGameImage = await _context.GameImages.FindAsync(imageId);
+        if (existingGameImage == null) return false;
 
         _context.GameImages.Remove(existingGameImage);
-        await _context.SaveChangesAsync();
-
-        return true;
+        return await _context.SaveChangesAsync() > 0;
     }
 }

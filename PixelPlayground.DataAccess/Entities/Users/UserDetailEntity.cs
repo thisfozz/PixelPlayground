@@ -10,7 +10,7 @@ public partial class UserDetailEntity
 
     public DateOnly? Birthdate { get; set; }
 
-    public string? FirstName { get; set; }
+    public string? FirstName { get; set; }  
 
     public string? LastName { get; set; }
 

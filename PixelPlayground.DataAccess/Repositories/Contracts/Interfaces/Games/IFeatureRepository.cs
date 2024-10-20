@@ -20,7 +20,7 @@ public interface IFeatureRepository
     /// </summary>
     /// <param name="featureName">Имя фичи, которую нужно создать.</param>
     /// <returns>true, если фича успешно создана; иначе false.</returns>
-    Task<bool> CreateFeatureAsync(string featureName);
+    Task<bool> AddFeatureAsync(string featureName);
 
     /// <summary>
     /// Получает все фичи.

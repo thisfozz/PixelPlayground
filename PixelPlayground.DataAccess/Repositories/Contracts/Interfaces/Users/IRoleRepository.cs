@@ -33,14 +33,14 @@ public interface IRoleRepository
     /// </summary>
     /// <param name="roleId">Идентификатор роли, которую нужно получить.</param>
     /// <returns>Объект RoleEntity, представляющий роль, если она существует; иначе null.</returns>
-    Task<RoleEntity?> GetRoleByIdAsync(int roleId);
+    Task<RoleEntity?> GetRoleByIdAsync(Guid roleId);
 
     /// <summary>
     /// Получает ID роли по её имени.
     /// </summary>
     /// <param name="roleName">Имя роли, ID которой нужно получить.</param>
     /// <returns>ID роли.</returns>
-    Task<int> GetIdRoleByNameAsync(string roleName);
+    Task<Guid?> GetIdRoleByNameAsync(string roleName);
 
     /// <summary>
     /// Обновляет существующую роль.
@@ -48,12 +48,12 @@ public interface IRoleRepository
     /// <param name="roleId">Идентификатор роли, которую нужно обновить.</param>
     /// <param name="newRoleName">Новое имя для роли.</param>
     /// <returns>true, если роль успешно обновлена; иначе false.</returns>
-    Task<bool> UpdateRoleAsync(int roleId, string newRoleName);
+    Task<bool> UpdateRoleAsync(Guid roleId, string newRoleName);
 
     /// <summary>
     /// Удаляет роль по её ID.
     /// </summary>
     /// <param name="roleId">Идентификатор роли, которую нужно удалить.</param>
     /// <returns>true, если роль успешно удалена; иначе false.</returns>
-    Task<bool> DeleteRoleAsync(int roleId);
+    Task<bool> DeleteRoleAsync(Guid roleId);
 }

@@ -9,11 +9,25 @@ namespace DataAccess.Repositories.Contracts.Interfaces.Users;
 public interface IUserRepository
 {
     /// <summary>
-    /// Создает нового пользователя.
+    /// Проверяет существование пользователя по логину.
+    /// </summary>
+    /// <param name="login">Логин пользователя, которого нужно проверить.</param>
+    /// <returns>true, если пользователь с данным логином существует; иначе false.</returns>
+    Task<bool> UserExistsByUsernameAsync(string login);
+
+    /// <summary>
+    /// Проверяет существование пользователя по email.
+    /// </summary>
+    /// <param name="email">Email пользователя, который нужно проверить.</param>
+    /// <returns>true, если пользователь с данным email существует; иначе false.</returns>
+    Task<bool> UserExistsByEmailAsync(string email);
+
+    /// <summary>
+    /// Регистрация нового пользователя.
     /// </summary>
     /// <param name="user">Объект пользователя, который нужно создать.</param>
     /// <returns>true, если пользователь успешно создан; иначе false.</returns>
-    Task<bool> CreateUserAsync(UserEntity user);
+    Task<bool> RegisterUserAsync(UserEntity user);
 
     /// <summary>
     /// Получает информацию о пользователе по его ID.
@@ -28,6 +42,13 @@ public interface IUserRepository
     /// <param name="login">Логин пользователя, которого нужно найти.</param>
     /// <returns>Объект UserEntity, представляющий пользователя, если он существует; иначе null.</returns>
     Task<UserEntity?> GetUserByLoginAsync(string login);
+
+    /// <summary>
+    /// Получает пользователя по электронному адресу.
+    /// </summary>
+    /// <param name="email">Электронный адрес пользователя, которого нужно найти.</param>
+    /// <returns>Объект UserEntity, представляющий пользователя, если он существует; иначе null.</returns>
+    Task<UserEntity?> GetUserByEmailAsync(string email);
 
     /// <summary>
     /// Обновляет имя пользователя.
@@ -60,6 +81,14 @@ public interface IUserRepository
     /// <param name="amount">Сумма, на которую нужно пополнить баланс.</param>
     /// <returns>true, если баланс успешно пополнен; иначе false.</returns>
     Task<bool> AddBalanceAsync(Guid userId, decimal amount);
+
+    /// <summary>
+    /// Уменьшает баланс пользователя.
+    /// </summary>
+    /// <param name="userId">Идентификатор пользователя, чей баланс нужно уменьшить.</param>
+    /// <param name="amount">Сумма, на которую нужно уменьшить баланс.</param>
+    /// <returns>true, если баланс успешно пополнен; иначе false.</returns>
+    Task<bool> DeductBalanceAsync(Guid userId, decimal amount);
 
     /// <summary>
     /// Удаляет (мягко) аккаунт пользователя.
