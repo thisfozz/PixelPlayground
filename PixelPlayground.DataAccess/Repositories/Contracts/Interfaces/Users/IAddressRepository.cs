@@ -9,12 +9,6 @@ namespace DataAccess.Repositories.Contracts.Interfaces.Users;
 public interface IAddressRepository
 {
     /// <summary>
-    /// Получает все адреса из базы данных.
-    /// </summary>
-    /// <returns>Список всех адресов.</returns>
-    Task<IEnumerable<AddressEntity>> GetAllAddressesAsync();
-
-    /// <summary>
     /// Получает адреса по идентификатору пользователя.
     /// </summary>
     /// <param name="userId">Идентификатор пользователя.</param>
@@ -29,13 +23,6 @@ public interface IAddressRepository
     Task<AddressEntity?> GetAddressByIdAsync(Guid addressId);
 
     /// <summary>
-    /// Получает идентификаторы адресов, принадлежащих пользователю.
-    /// </summary>
-    /// <param name="userId">Идентификатор пользователя.</param>
-    /// <returns>Список идентификаторов адресов.</returns>
-    Task<IEnumerable<Guid>> GetAddressIdsByUserIdAsync(Guid userId);
-
-    /// <summary>
     /// Создает новый адрес для пользователя.
     /// </summary>
     /// <param name="address">Объект адреса, который нужно добавить.</param>
@@ -45,9 +32,10 @@ public interface IAddressRepository
     /// <summary>
     /// Обновляет существующий адрес.
     /// </summary>
+    /// <param name="userId">Идентификатор пользователя, которому принадлежит адрес.</param>
     /// <param name="newAddress">Объект адреса с обновленными данными.</param>
     /// <returns>true, если адрес успешно обновлен; иначе false.</returns>
-    Task<bool> UpdateAddressAsync(AddressEntity newAddress);
+    Task<bool> UpdateAddressAsync(Guid userId, AddressEntity newAddress);
 
     /// <summary>
     /// Удаляет адрес по его идентификатору.

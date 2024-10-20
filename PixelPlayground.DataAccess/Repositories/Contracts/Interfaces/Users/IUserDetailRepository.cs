@@ -25,7 +25,8 @@ public interface IUserDetailRepository
     /// <summary>
     /// Загружает аватарку пользователя.
     /// </summary>
+    /// <param name="userId">Идентификатор пользователя, которому принадлежит аватарка.</param>
     /// <param name="avatarUrl">URL аватарки пользователя.</param>
     /// <returns>true, если аватарка успешно загружена; иначе false.</returns>
-    Task<bool> UploadAvatarAsync(UserDetailEntity userDetail, string avatarUrl);
+    Task<bool> UploadAvatarAsync(Guid userId, string avatarUrl);
 }

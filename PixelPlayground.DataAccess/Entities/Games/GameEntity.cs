@@ -43,4 +43,6 @@ public partial class GameEntity
     public virtual ICollection<GenreEntity> Genres { get; set; } = new List<GenreEntity>();
 
     public virtual ICollection<PlatformEntity> Platforms { get; set; } = new List<PlatformEntity>();
+
+    public virtual ICollection<PurchasedGameEntity> PurchasedGames { get; set; } = new List<PurchasedGameEntity>();
 }

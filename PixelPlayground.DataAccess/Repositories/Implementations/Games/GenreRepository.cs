@@ -14,11 +14,6 @@ public class GenreRepository : IGenreRepository
         _context = context;
     }
 
-    private async Task<GenreEntity?> FindGenreByIdAsync(Guid genreId)
-    {
-        return await _context.Genres.FirstOrDefaultAsync(genre => genre.GenreId == genreId);
-    }
-
     public async Task<bool> GenreExistsAsync(string genreName)
     {
         return await _context.Genres.AnyAsync(genre => genre.Name == genreName);
@@ -38,9 +33,7 @@ public class GenreRepository : IGenreRepository
         };
 
         _context.Genres.Add(newGenre);
-        await _context.SaveChangesAsync();
-
-        return true;
+        return await _context.SaveChangesAsync() > 0;
     }
 
     public async Task<IEnumerable<GenreEntity>> GetAllGenresAsync()
@@ -57,36 +50,26 @@ public class GenreRepository : IGenreRepository
 
     public async Task<GenreEntity?> GetGenreByIdAsync(Guid genreId)
     {
-        return await FindGenreByIdAsync(genreId);
+        return await _context.Genres.FindAsync(genreId);
     }
 
     public async Task<bool> UpdateGenreAsync(Guid genreId, string newGenreName)
     {
-        var existingGenre = await FindGenreByIdAsync(genreId);
+        var existingGenre = await _context.Genres.FindAsync(genreId);
 
-        if (existingGenre == null)
-        {
-            return false;
-        }
+        if (existingGenre == null) return false;
 
         existingGenre.Name = newGenreName;
-        await _context.SaveChangesAsync();
-
-        return true;
+        return await _context.SaveChangesAsync() > 0;
     }
 
     public async Task<bool> DeleteGenreAsync(Guid genreId)
     {
-        var existingGenre = await FindGenreByIdAsync(genreId);
+        var existingGenre = await _context.Genres.FindAsync(genreId);
 
-        if (existingGenre == null)
-        {
-            return false;
-        }
+        if (existingGenre == null) return false;
 
         _context.Genres.Remove(existingGenre);
-        await _context.SaveChangesAsync();
-
-        return true;
+        return await _context.SaveChangesAsync() > 0;
     }
 }

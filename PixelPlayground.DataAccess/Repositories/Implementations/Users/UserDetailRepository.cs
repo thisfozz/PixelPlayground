@@ -21,28 +21,15 @@ public class UserDetailRepository : IUserDetailRepository
 
     public async Task<bool> UpdateUserDetailAsync(UserDetailEntity userDetail)
     {
-        var existingUser = await _context.Users
-            .Include(user => user.UserDetails)
-            .FirstOrDefaultAsync(user => user.UserId == userDetail.UserId);
+        var existingUserDetail = await _context.UserDetails.FirstOrDefaultAsync(detail => detail.UserId == userDetail.UserId);
+        if (existingUserDetail == null) return false;
 
-        if (existingUser == null)
-        {
-            return false;
-        }
-
-        var existingUserDetail = existingUser.UserDetails.FirstOrDefault();
-
-        if (existingUserDetail == null)
-        {
-            return false;
-        }
-
-        if (!string.IsNullOrEmpty(userDetail.FirstName))
+        if (!string.IsNullOrEmpty(userDetail.FirstName) && existingUserDetail.FirstName != userDetail.FirstName)
         {
             existingUserDetail.FirstName = userDetail.FirstName;
         }
 
-        if(!string.IsNullOrEmpty(userDetail.LastName))
+        if (!string.IsNullOrEmpty(userDetail.LastName) && existingUserDetail.LastName != userDetail.LastName)
         {
             existingUserDetail.LastName = userDetail.LastName;
         }
@@ -53,38 +40,20 @@ public class UserDetailRepository : IUserDetailRepository
         }
 
         existingUserDetail.UpdatedAt = DateTime.UtcNow;
-
-        await _context.SaveChangesAsync();
-
-        return true;
+        return await _context.SaveChangesAsync() > 0;
     }
 
-    public async Task<bool> UploadAvatarAsync(UserDetailEntity userDetail, string avatarUrl)
+    public async Task<bool> UploadAvatarAsync(Guid userId, string avatarUrl)
     {
-        var existingUser = await _context.Users
-            .Include(user => user.UserDetails)
-            .FirstOrDefaultAsync(user => user.UserId == userDetail.UserId);
+        var existingUserDetail = await _context.UserDetails.FirstOrDefaultAsync(detail => detail.UserId == userId);
+        if (existingUserDetail == null) return false;
 
-        if (existingUser == null)
-        {
-            return false;
-        }
-
-        var existingUserDetail = existingUser.UserDetails.FirstOrDefault();
-
-        if (existingUserDetail == null)
-        {
-            return false;
-        }
-
-        if (!string.IsNullOrEmpty(avatarUrl))
+        if (!string.IsNullOrEmpty(avatarUrl) && existingUserDetail.AvatarUrl != avatarUrl)
         {
             existingUserDetail.AvatarUrl = avatarUrl;
+            existingUserDetail.UpdatedAt = DateTime.UtcNow;
+            return await _context.SaveChangesAsync() > 0;
         }
-
-        existingUserDetail.UpdatedAt = DateTime.UtcNow;
-
-        await _context.SaveChangesAsync();
 
         return true;
     }

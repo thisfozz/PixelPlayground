@@ -19,10 +19,7 @@ public class RoleRepository : IRoleRepository
     }
     public async Task<bool> CreateRoleAsync(string roleName)
     {
-        if (await RoleExistsAsync(roleName))
-        {
-            return false;
-        }
+        if (await RoleExistsAsync(roleName)) return false;
 
         var newRole = new RoleEntity
         {
@@ -31,57 +28,42 @@ public class RoleRepository : IRoleRepository
         };
 
         _context.Roles.Add(newRole);
-        await _context.SaveChangesAsync();
-
-        return true;
+        return await _context.SaveChangesAsync() > 0;
     }
 
     public async Task<IEnumerable<RoleEntity>> GetAllRolesAsync()
     {
-        return await _context.Roles.ToListAsync();
+        return await _context.Roles.OrderBy(role => role.RoleName).ToListAsync();
     }
 
     public async Task<RoleEntity?> GetRoleByIdAsync(Guid roleId)
     {
-        return await _context.Roles.FirstOrDefaultAsync(role => role.RoleId == roleId);
+        return await _context.Roles.FindAsync(roleId);
     }
 
     public async Task<Guid?> GetIdRoleByNameAsync(string roleName)
     {
         var existingRole = await _context.Roles.FirstOrDefaultAsync(role => role.RoleName == roleName);
 
-        // Может проверку добавить?
-
         return existingRole?.RoleId;
     }
 
     public async Task<bool> UpdateRoleAsync(Guid roleId, string newRoleName)
     {
-        var existingRole = await _context.Roles.FirstOrDefaultAsync(role => role.RoleId == roleId);
-
-        if (existingRole == null)
-        {
-            return false;
-        }
+        var existingRole = await _context.Roles.FindAsync(roleId);
+        if (existingRole == null || existingRole.RoleName == newRoleName) return false;
 
         existingRole.RoleName = newRoleName;
-        await _context.SaveChangesAsync();
-
-        return true;
+        return await _context.SaveChangesAsync() > 0;
     }
 
     public async Task<bool> DeleteRoleAsync(Guid roleId)
     {
-        var existingRole = await _context.Roles.FirstOrDefaultAsync(role => role.RoleId == roleId);
+        var existingRole = await _context.Roles.FindAsync(roleId);
 
-        if (existingRole == null)
-        {
-            return false;
-        }
+        if (existingRole == null) return false;
 
         _context.Roles.Remove(existingRole);
-        await _context.SaveChangesAsync();
-
-        return true;
+        return await _context.SaveChangesAsync() > 0;
     }
 }

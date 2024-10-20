@@ -13,10 +13,6 @@ public class AddressRepository : IAddressRepository
     {
         _context = context;
     }
-    public async Task<IEnumerable<AddressEntity>> GetAllAddressesAsync()
-    {
-        return await _context.Addresses.ToListAsync();
-    }
 
     public async Task<IEnumerable<AddressEntity>> GetAddressesByUserIdAsync(Guid userId)
     {
@@ -28,48 +24,24 @@ public class AddressRepository : IAddressRepository
         return await _context.Addresses.FirstOrDefaultAsync(a => a.AddressId == addressId);
     }
 
-    public async Task<IEnumerable<Guid>> GetAddressIdsByUserIdAsync(Guid userId)
-    {
-        return await _context.Addresses
-                             .Where(address => address.UserId == userId)
-                             .Select(address => address.AddressId)
-                             .ToListAsync();
-    }
-
     public async Task<bool> AddAddressAsync(AddressEntity address)
     {
-        if (address == null)
-        {
-            return false;
-        }
+        if (address == null) return false;
 
         var userExists = await _context.Users.AnyAsync(user => user.UserId == address.UserId);
-        if (!userExists)
-        {
-            return false;
-        }
+        if (!userExists) return false;
 
         await _context.Addresses.AddAsync(address);
-
-        await _context.SaveChangesAsync();
-
-        return true;
+        return await _context.SaveChangesAsync() > 0;
     }
 
-    public async Task<bool> UpdateAddressAsync(AddressEntity newAddress)
+    public async Task<bool> UpdateAddressAsync(Guid userId, AddressEntity newAddress)
     {
-        if (newAddress == null)
-        {
-            return false;
-        }
+        if (newAddress == null) return false;
 
-        var existingAddress = await _context.Addresses
-                                            .FirstOrDefaultAsync(address => address.AddressId == newAddress.AddressId);
+        var existingAddress = await _context.Addresses.FirstOrDefaultAsync(address => address.AddressId == newAddress.AddressId);
 
-        if (existingAddress == null)
-        {
-            return false;
-        }
+        if (existingAddress == null || existingAddress.UserId != userId) return false;
 
         existingAddress.Country = newAddress.Country;
         existingAddress.City = newAddress.City;
@@ -77,10 +49,7 @@ public class AddressRepository : IAddressRepository
         existingAddress.Address = newAddress.Address;
         existingAddress.PostalCode = newAddress.PostalCode;
         existingAddress.PhoneNumber = newAddress.PhoneNumber;
-
-        await _context.SaveChangesAsync();
-
-        return true;
+        return await _context.SaveChangesAsync() > 0;
     }
 
     public async Task<bool> DeleteAddressByIdAsync(Guid addressId)
@@ -92,22 +61,14 @@ public class AddressRepository : IAddressRepository
         }
 
         _context.Addresses.Remove(address);
-        await _context.SaveChangesAsync();
-
-        return true;
+        return await _context.SaveChangesAsync() > 0;
     }
 
     public async Task<bool> DeleteAllAddressesByUserIdAsync(Guid userId)
     {
         var addresses = await _context.Addresses.Where(address => address.UserId == userId).ToListAsync();
-        if (addresses == null || !addresses.Any())
-        {
-            return false;
-        }
 
         _context.Addresses.RemoveRange(addresses);
-        await _context.SaveChangesAsync();
-
-        return true;
+        return await _context.SaveChangesAsync() > 0;
     }
 }

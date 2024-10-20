@@ -14,11 +14,6 @@ public class PlatformRepository : IPlatformRepository
         _context = context;
     }
 
-    private async Task<PlatformEntity?> FindPlatformByIdAsync(Guid platformId)
-    {
-        return await _context.Platforms.FirstOrDefaultAsync(platform => platform.PlatformId == platformId);
-    }
-
     public async Task<bool> PlatformExistsAsync(string platformName)
     {
         return await _context.Platforms.AnyAsync(platform => platform.Name == platformName);
@@ -38,9 +33,7 @@ public class PlatformRepository : IPlatformRepository
         };
 
         _context.Platforms.Add(newPlatform);
-        await _context.SaveChangesAsync();
-
-        return true;
+        return await _context.SaveChangesAsync() > 0;
     }
 
     public async Task<IEnumerable<PlatformEntity>> GetAllPlatformsAsync()
@@ -57,36 +50,24 @@ public class PlatformRepository : IPlatformRepository
 
     public async Task<PlatformEntity?> GetPlatformByIdAsync(Guid platformId)
     {
-        return await FindPlatformByIdAsync(platformId);
+        return await _context.Platforms.FindAsync(platformId);
     }
 
     public async Task<bool> UpdatePlatformAsync(Guid platformId, string newPlatformName)
     {
-        var existingPlatform = await FindPlatformByIdAsync(platformId);
-
-        if (existingPlatform == null)
-        {
-            return false;
-        }
+        var existingPlatform = await _context.Platforms.FindAsync(platformId);
+        if (existingPlatform == null) return false;
 
         existingPlatform.Name = newPlatformName;
-        await _context.SaveChangesAsync();
-
-        return true;
+        return await _context.SaveChangesAsync() > 0;
     }
 
     public async Task<bool> DeletePlatformAsync(Guid platformId)
     {
-        var existingPlatform = await FindPlatformByIdAsync(platformId);
-
-        if (existingPlatform == null)
-        {
-            return false;
-        }
+        var existingPlatform = await _context.Platforms.FindAsync(platformId);
+        if (existingPlatform == null) return false;
 
         _context.Platforms.Remove(existingPlatform);
-        await _context.SaveChangesAsync();
-
-        return true;
+        return await _context.SaveChangesAsync() > 0;
     }
 }

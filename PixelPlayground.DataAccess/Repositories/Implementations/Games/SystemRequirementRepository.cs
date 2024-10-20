@@ -28,9 +28,7 @@ public class SystemRequirementRepository : ISystemRequirementRepository
         }
 
         _context.SystemRequirements.Add(systemRequirement);
-        await _context.SaveChangesAsync();
-
-        return true;
+        return await _context.SaveChangesAsync() > 0;
     }
 
     public async Task<SystemRequirementEntity?> GetSystemRequirementsByGameIdAsync(Guid gameId)
@@ -38,35 +36,27 @@ public class SystemRequirementRepository : ISystemRequirementRepository
         return await _context.SystemRequirements.FirstOrDefaultAsync(sr => sr.GameId == gameId);
     }
 
-    public async Task<bool> UpdateSystemRequirementsAsync(SystemRequirementEntity systemRequirement)
+    public async Task<bool> UpdateSystemRequirementsAsync(Guid gameId, SystemRequirementEntity updatedRequirements)
     {
-        var existingRequirements = await _context.SystemRequirements.FirstOrDefaultAsync(sr => sr.GameId == systemRequirement.GameId);
+        var existingRequirements = await _context.SystemRequirements.FirstOrDefaultAsync(sr => sr.GameId == gameId);
 
-        if (existingRequirements == null)
-        {
-            return false;
-        }
+        if (existingRequirements == null) return false;
 
-        existingRequirements.MinRequirements = systemRequirement.MinRequirements;
-        existingRequirements.RecommendedRequirements = systemRequirement.RecommendedRequirements;
-
-        await _context.SaveChangesAsync();
-
-        return true;
+        existingRequirements.MinRequirements = updatedRequirements.MinRequirements;
+        existingRequirements.RecommendedRequirements = updatedRequirements.RecommendedRequirements;
+        return await _context.SaveChangesAsync() > 0;
     }
 
     public async Task<bool> DeleteSystemRequirementsAsync(Guid gameId)
     {
-        var existingRequirements = await _context.SystemRequirements.FirstOrDefaultAsync(sr => sr.GameId == gameId);
+        var existingRequirements = await _context.SystemRequirements.Where(req => req.GameId == gameId).ToListAsync();
 
-        if (existingRequirements == null)
+        if (existingRequirements.Count == 0)
         {
             return false;
         }
 
-        _context.SystemRequirements.Remove(existingRequirements);
-        await _context.SaveChangesAsync();
-
-        return true;
+        _context.SystemRequirements.RemoveRange(existingRequirements);
+        return await _context.SaveChangesAsync() > 0;
     }
 }

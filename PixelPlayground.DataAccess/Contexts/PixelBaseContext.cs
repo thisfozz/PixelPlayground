@@ -27,6 +27,7 @@ public partial class PixelBaseContext : DbContext
     public virtual DbSet<SystemRequirementEntity> SystemRequirements { get; set; }
     public virtual DbSet<UserEntity> Users { get; set; }
     public virtual DbSet<UserDetailEntity> UserDetails { get; set; }
+    public virtual DbSet<PurchasedGameEntity> PurchasedGames { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -46,6 +47,7 @@ public partial class PixelBaseContext : DbContext
         modelBuilder.ApplyConfiguration(new SystemRequirementConfiguration());
         modelBuilder.ApplyConfiguration(new UserConfiguration());
         modelBuilder.ApplyConfiguration(new UserDetailConfiguration());
+        modelBuilder.ApplyConfiguration(new PurchasedGameConfiguration());
 
         OnModelCreatingPartial(modelBuilder);
     }

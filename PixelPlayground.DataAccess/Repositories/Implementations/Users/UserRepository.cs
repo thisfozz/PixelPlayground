@@ -22,43 +22,84 @@ public class UserRepository : IUserRepository
     {
         return await _context.Users.AnyAsync(user => user.Email == email);
     }
-    public Task<bool> CreateUserAsync(UserEntity user)
+
+    public async Task<bool> RegisterUserAsync(UserEntity user)
     {
-        throw new NotImplementedException();
+        var isUserRegistered = await _context.Users.FirstOrDefaultAsync(u => u.Login == user.Login);
+        if(isUserRegistered == null) return false;
+
+        _context.Users.Add(user);
+        return await _context.SaveChangesAsync() > 0;
     }
 
-    public Task<UserEntity?> GetUserByIdAsync(Guid userId)
+    public async Task<UserEntity?> GetUserByIdAsync(Guid userId)
     {
-        throw new NotImplementedException();
+        return await _context.Users.FindAsync(userId);
     }
 
-    public Task<UserEntity?> GetUserByLoginAsync(string login)
+    public async Task<UserEntity?> GetUserByLoginAsync(string login)
     {
-        throw new NotImplementedException();
+        return await _context.Users.FirstOrDefaultAsync(user => user.Login == login);
     }
 
-    public Task<bool> UpdateDisplayNameAsync(Guid userId, string displayName)
+    public async Task<UserEntity?> GetUserByEmailAsync(string email)
     {
-        throw new NotImplementedException();
+        return await _context.Users.FirstOrDefaultAsync(user => user.Email == email);
     }
 
-    public Task<bool> UpdateEmailAsync(Guid userId, string email)
+    public async Task<bool> UpdateDisplayNameAsync(Guid userId, string displayName)
     {
-        throw new NotImplementedException();
+        var user = await _context.Users.FindAsync(userId);
+        if (user == null) return false;
+
+        user.Email = displayName;
+        return await _context.SaveChangesAsync() > 0;
     }
 
-    public Task<bool> UpdatePasswordAsync(Guid userId, string newPasswordHash)
+    public async Task<bool> UpdateEmailAsync(Guid userId, string email)
     {
-        throw new NotImplementedException();
+        var user = await _context.Users.FindAsync(userId);
+        if (user == null) return false;
+
+        user.Email = email;
+        return await _context.SaveChangesAsync() > 0;
     }
 
-    public Task<bool> AddBalanceAsync(Guid userId, decimal amount)
+    public async Task<bool> UpdatePasswordAsync(Guid userId, string newPasswordHash)
     {
-        throw new NotImplementedException();
+        var user = await _context.Users.FindAsync(userId);
+        if (user == null) return false;
+
+        user.PasswordHash = newPasswordHash;
+        return await _context.SaveChangesAsync() > 0;
     }
 
-    public Task<bool> DeleteUserAsync(Guid userId)
+    public async Task<bool> AddBalanceAsync(Guid userId, decimal amount)
     {
-        throw new NotImplementedException();
+        var user = await _context.Users.FindAsync(userId);
+        if (user == null) return false;
+
+        user.Balance += amount;
+        return await _context.SaveChangesAsync() > 0;
+    }
+
+    public async Task<bool> DeductBalanceAsync(Guid userId, decimal amount)
+    {
+        var user = await _context.Users.FindAsync(userId);
+        if (user == null) return false;
+
+        if (user.Balance < amount) return false;
+
+        user.Balance -= amount;
+        return await _context.SaveChangesAsync() > 0;
+    }
+
+    public async Task<bool> DeleteUserAsync(Guid userId)
+    {
+        var user = await _context.Users.FindAsync(userId);
+        if (user == null) return false;
+
+        user.IsDeleted = true;
+        return await _context.SaveChangesAsync() > 0;
     }
 }

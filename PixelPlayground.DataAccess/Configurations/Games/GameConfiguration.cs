@@ -107,5 +107,11 @@ public class GameConfiguration : IEntityTypeConfiguration<GameEntity>
                     j.IndexerProperty<Guid>("GameId").HasColumnName("game_id");
                     j.IndexerProperty<Guid>("PlatformId").HasColumnName("platform_id");
                 });
+
+        builder.HasMany(d => d.PurchasedGames)
+            .WithOne(pg => pg.Game)
+            .HasForeignKey(pg => pg.GameId)
+            .OnDelete(DeleteBehavior.Cascade)
+            .HasConstraintName("purchased_games_game_id_fkey");
     }
 }

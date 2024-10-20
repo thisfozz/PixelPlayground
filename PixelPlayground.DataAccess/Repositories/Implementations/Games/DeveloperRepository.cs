@@ -14,11 +14,6 @@ public class DeveloperRepository : IDeveloperRepository
         _context = context;
     }
 
-    private async Task<DeveloperEntity?> FindDeveloperByIdAsync(Guid developerId)
-    {
-        return await _context.Developers.FirstOrDefaultAsync(dev => dev.DeveloperId == developerId);
-    }
-
     public async Task<bool> DeveloperExistsAsync(string developerName)
     {
         return await _context.Developers.AnyAsync(dev => dev.Name == developerName);
@@ -38,9 +33,8 @@ public class DeveloperRepository : IDeveloperRepository
         };
 
         _context.Developers.Add(newDeveloper);
-        await _context.SaveChangesAsync();
 
-        return true;
+        return await _context.SaveChangesAsync() > 0;
     }
 
     public async Task<IEnumerable<DeveloperEntity>> GetAllDevelopersAsync()
@@ -50,7 +44,7 @@ public class DeveloperRepository : IDeveloperRepository
 
     public async Task<DeveloperEntity?> GetDeveloperByIdAsync(Guid developerId)
     {
-        return await FindDeveloperByIdAsync(developerId);
+        return await _context.Developers.FindAsync(developerId); ;
     }
 
     public async Task<Guid?> GetIdDeveloperByNameAsync(string developerName)
@@ -62,31 +56,19 @@ public class DeveloperRepository : IDeveloperRepository
 
     public async Task<bool> UpdateDeveloperAsync(Guid developerId, string newDeveloperName)
     {
-        var existingDeveloper = await FindDeveloperByIdAsync(developerId);
-
-        if (existingDeveloper == null)
-        {
-            return false;
-        }
+        var existingDeveloper = await _context.Developers.FindAsync(developerId);
+        if (existingDeveloper == null) return false;
 
         existingDeveloper.Name = newDeveloperName;
-        await _context.SaveChangesAsync();
-
-        return true;
+        return await _context.SaveChangesAsync() > 0;
     }
 
     public async Task<bool> DeleteDeveloperAsync(Guid developerId)
     {
-        var existingDeveloper = await FindDeveloperByIdAsync(developerId);
-
-        if (existingDeveloper == null)
-        {
-            return false;
-        }
+        var existingDeveloper = await _context.Developers.FindAsync(developerId);
+        if (existingDeveloper == null) return false;
 
         _context.Developers.Remove(existingDeveloper);
-        await _context.SaveChangesAsync();
-
-        return true;
+        return await _context.SaveChangesAsync() > 0;
     }
 }

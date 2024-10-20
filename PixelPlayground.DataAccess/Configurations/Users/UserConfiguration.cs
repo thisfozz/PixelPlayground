@@ -13,9 +13,7 @@ public class UserConfiguration : IEntityTypeConfiguration<UserEntity>
         builder.ToTable("users");
 
         builder.HasIndex(e => e.DisplayName, "users_display_name_key").IsUnique();
-
         builder.HasIndex(e => e.Email, "users_email_key").IsUnique();
-
         builder.HasIndex(e => e.Login, "users_login_key").IsUnique();
 
         builder.Property(e => e.UserId)
@@ -42,9 +40,16 @@ public class UserConfiguration : IEntityTypeConfiguration<UserEntity>
         builder.Property(e => e.PasswordHash).HasColumnName("password_hash");
         builder.Property(e => e.RoleId).HasColumnName("role_id");
 
-        builder.HasOne(d => d.Role).WithMany(p => p.Users)
+        builder.HasOne(d => d.Role)
+            .WithMany(p => p.Users)
             .HasForeignKey(d => d.RoleId)
             .OnDelete(DeleteBehavior.ClientSetNull)
             .HasConstraintName("users_role_id_fkey");
+
+        builder.HasMany(u => u.PurchasedGames)
+            .WithOne(pg => pg.User)
+            .HasForeignKey(pg => pg.UserId)
+            .OnDelete(DeleteBehavior.Cascade)
+            .HasConstraintName("purchased_games_user_id_fkey");
     }
 }
