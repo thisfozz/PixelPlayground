@@ -20,7 +20,7 @@ public interface IDeveloperRepository
     /// </summary>
     /// <param name="developerName">Имя разработчика, который нужно создать.</param>
     /// <returns>true, если разработчик успешно создан; иначе false.</returns>
-    Task<bool> CreateDeveloperAsync(string developerName);
+    Task<bool> AddDeveloperAsync(string developerName);
 
     /// <summary>
     /// Получает всех разработчиков.

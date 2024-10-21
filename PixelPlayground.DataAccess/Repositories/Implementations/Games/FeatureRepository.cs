@@ -21,10 +21,7 @@ public class FeatureRepository : IFeatureRepository
 
     public async Task<bool> AddFeatureAsync(string featureName)
     {
-        if (await FeatureExistsAsync(featureName))
-        {
-            return false;
-        }
+        if (await FeatureExistsAsync(featureName)) return false;
 
         var newFeature = new FeatureEntity
         {

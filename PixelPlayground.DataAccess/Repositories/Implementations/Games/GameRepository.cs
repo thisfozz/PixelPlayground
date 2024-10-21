@@ -164,10 +164,7 @@ public class GameRepository : IGameRepository
     public async Task<bool> AddPlatformToGameAsync(Guid gameId, Guid platformId)
     {
         var existingGame = await _context.Games.Include(g => g.Platforms).FirstOrDefaultAsync(g => g.GameId == gameId);
-        if (existingGame == null || existingGame.Platforms.Any(p => p.PlatformId == platformId))
-        {
-            return false;
-        }
+        if (existingGame == null || existingGame.Platforms.Any(p => p.PlatformId == platformId)) return false;
 
         var platform = await _platformRepository.GetPlatformByIdAsync(platformId);
         if (platform != null)
@@ -182,12 +179,9 @@ public class GameRepository : IGameRepository
     public async Task<bool> RemovePlatformFromGameAsync(Guid gameId, Guid platformId)
     {
         var existingGame = await _context.Games.Include(g => g.Platforms).FirstOrDefaultAsync(g => g.GameId == gameId);
-        if (existingGame == null)
-        {
-            return false;
-        }
+        if (existingGame == null) return false;
 
-        var platformToRemove = await _platformRepository.GetPlatformByIdAsync(gameId);
+        var platformToRemove = existingGame.Platforms.FirstOrDefault(p => p.PlatformId == platformId);
         if (platformToRemove != null)
         {
             existingGame.Platforms.Remove(platformToRemove);
@@ -200,10 +194,7 @@ public class GameRepository : IGameRepository
     public async Task<bool> AddGenreToGameAsync(Guid gameId, Guid genreId)
     {
         var existingGame = await _context.Games.Include(g => g.Genres).FirstOrDefaultAsync(g => g.GameId == gameId);
-        if (existingGame == null || existingGame.Genres.Any(g => g.GenreId == genreId))
-        {
-            return false;
-        }
+        if (existingGame == null || existingGame.Genres.Any(g => g.GenreId == genreId)) return false;
 
         var genre = await _genreRepository.GetGenreByIdAsync(genreId);
         if (genre != null)
@@ -218,10 +209,7 @@ public class GameRepository : IGameRepository
     public async Task<bool> RemoveGenreFromGameAsync(Guid gameId, Guid genreId)
     {
         var existingGame = await _context.Games.Include(g => g.Genres).FirstOrDefaultAsync(g => g.GameId == gameId);
-        if (existingGame == null)
-        {
-            return false;
-        }
+        if (existingGame == null) return false;
 
         var genreToRemove = await _genreRepository.GetGenreByIdAsync(genreId);
         if (genreToRemove != null)
@@ -236,10 +224,7 @@ public class GameRepository : IGameRepository
     public async Task<bool> AddFeatureToGameAsync(Guid gameId, Guid featureId)
     {
         var existingGame = await _context.Games.Include(g => g.Features).FirstOrDefaultAsync(g => g.GameId == gameId);
-        if (existingGame == null || existingGame.Features.Any(f => f.FeatureId == featureId))
-        {
-            return false;
-        }
+        if (existingGame == null || existingGame.Features.Any(f => f.FeatureId == featureId)) return false;
 
         var feature = await _featureRepository.GetFeatureByIdAsync(featureId);
         if(feature != null)
@@ -254,10 +239,7 @@ public class GameRepository : IGameRepository
     public async Task<bool> RemoveFeatureFromGameAsync(Guid gameId, Guid featureId)
     {
         var existingGame = await _context.Games.Include(g => g.Features).FirstOrDefaultAsync(g => g.GameId == gameId);
-        if (existingGame == null)
-        {
-            return false;
-        }
+        if (existingGame == null) return false;
 
         var featureToRemove = await _featureRepository.GetFeatureByIdAsync(featureId);
         if (featureToRemove != null)

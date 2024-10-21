@@ -21,10 +21,7 @@ public class PublisherRepository : IPublisherRepository
 
     public async Task<bool> CreatePublisherAsync(string publisherName)
     {
-        if (await PublisherExistsAsync(publisherName))
-        {
-            return false;
-        }
+        if (await PublisherExistsAsync(publisherName)) return false;
 
         var newPublisher = new PublisherEntity
         {

@@ -60,7 +60,6 @@ public class RoleRepository : IRoleRepository
     public async Task<bool> DeleteRoleAsync(Guid roleId)
     {
         var existingRole = await _context.Roles.FindAsync(roleId);
-
         if (existingRole == null) return false;
 
         _context.Roles.Remove(existingRole);

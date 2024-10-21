@@ -40,7 +40,6 @@ public class AddressRepository : IAddressRepository
         if (newAddress == null) return false;
 
         var existingAddress = await _context.Addresses.FirstOrDefaultAsync(address => address.AddressId == newAddress.AddressId);
-
         if (existingAddress == null || existingAddress.UserId != userId) return false;
 
         existingAddress.Country = newAddress.Country;
@@ -55,10 +54,7 @@ public class AddressRepository : IAddressRepository
     public async Task<bool> DeleteAddressByIdAsync(Guid addressId)
     {
         var address = await _context.Addresses.FirstOrDefaultAsync(a => a.AddressId == addressId);
-        if (address == null)
-        {
-            return false;
-        }
+        if (address == null) return false;
 
         _context.Addresses.Remove(address);
         return await _context.SaveChangesAsync() > 0;
