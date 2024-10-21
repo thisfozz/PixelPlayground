@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DataAccess.Repositories.Contracts.Interfaces.Reviews;
 
 namespace DataAccess.Repositories.Implementations.Reviews;
 
-public class ReviewLikeRepository
+public class ReviewLikeRepository : IReviewLikeRepository
 {
 
 }

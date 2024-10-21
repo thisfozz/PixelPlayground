@@ -19,12 +19,9 @@ public class DeveloperRepository : IDeveloperRepository
         return await _context.Developers.AnyAsync(dev => dev.Name == developerName);
     }
 
-    public async Task<bool> CreateDeveloperAsync(string developerName)
+    public async Task<bool> AddDeveloperAsync(string developerName)
     {
-        if (await DeveloperExistsAsync(developerName))
-        {
-            return false;
-        }
+        if (await DeveloperExistsAsync(developerName)) return false;
 
         var newDeveloper = new DeveloperEntity
         {
@@ -33,7 +30,6 @@ public class DeveloperRepository : IDeveloperRepository
         };
 
         _context.Developers.Add(newDeveloper);
-
         return await _context.SaveChangesAsync() > 0;
     }
 

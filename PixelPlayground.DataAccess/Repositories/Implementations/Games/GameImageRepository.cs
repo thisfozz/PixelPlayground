@@ -22,10 +22,7 @@ public class GameImageRepository : IGameImageRepository
     {
         var existingGameImage = await _context.GameImages.FirstOrDefaultAsync(gm => gm.ImageId == gameImage.ImageId);
 
-        if (existingGameImage != null)
-        {
-            return false;
-        }
+        if (existingGameImage != null) return false;
 
         _context.GameImages.Add(gameImage);
         return await _context.SaveChangesAsync() > 0;
@@ -39,9 +36,7 @@ public class GameImageRepository : IGameImageRepository
             .Select(gm => gm.ImageUrl)
             .ToListAsync();
 
-        var newImages = gameImages
-            .Where(img => !existingImages.Contains(img.ImageUrl))
-            .ToList();
+        var newImages = gameImages.Where(img => !existingImages.Contains(img.ImageUrl)).ToList();
 
         if (newImages.Count == 0) return false;
 

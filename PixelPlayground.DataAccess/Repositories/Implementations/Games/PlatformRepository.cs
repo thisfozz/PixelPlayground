@@ -21,10 +21,7 @@ public class PlatformRepository : IPlatformRepository
 
     public async Task<bool> CreatePlatformAsync(string platformName)
     {
-        if (await PlatformExistsAsync(platformName))
-        {
-            return false;
-        }
+        if (await PlatformExistsAsync(platformName)) return false;
 
         var newPlatform = new PlatformEntity
         {

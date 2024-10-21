@@ -21,11 +21,7 @@ public class SystemRequirementRepository : ISystemRequirementRepository
     public async Task<bool> CreateSystemRequirementsAsync(SystemRequirementEntity systemRequirement)
     {
         var existingRequirements = await _context.SystemRequirements.FirstOrDefaultAsync(sr => sr.GameId == systemRequirement.GameId);
-
-        if (existingRequirements != null)
-        {
-            return false;
-        }
+        if (existingRequirements != null) return false;
 
         _context.SystemRequirements.Add(systemRequirement);
         return await _context.SaveChangesAsync() > 0;
@@ -51,10 +47,7 @@ public class SystemRequirementRepository : ISystemRequirementRepository
     {
         var existingRequirements = await _context.SystemRequirements.Where(req => req.GameId == gameId).ToListAsync();
 
-        if (existingRequirements.Count == 0)
-        {
-            return false;
-        }
+        if (existingRequirements.Count == 0) return false;
 
         _context.SystemRequirements.RemoveRange(existingRequirements);
         return await _context.SaveChangesAsync() > 0;

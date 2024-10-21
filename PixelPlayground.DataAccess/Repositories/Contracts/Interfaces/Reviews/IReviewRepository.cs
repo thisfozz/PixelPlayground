@@ -4,16 +4,18 @@ namespace DataAccess.Repositories.Contracts.Interfaces.Reviews;
 
 
 /// <summary>
-/// Интерфейс для работы с отзывами пользователей к играм.
+/// Интерфейс для работы с отзывами к играм.
 /// </summary>
 public interface IReviewRepository
 {
     /// <summary>
-    /// Создает новый отзыв.
+    /// Создает новый отзыв с указанным статусом лайка или дизлайка.
     /// </summary>
+    /// <param name="gameId">Идентификатор игры, к которой оставлен отзыв.</param>
     /// <param name="review">Объект, представляющий новый отзыв.</param>
+    /// <param name="isLike">Указывает, является ли отзыв лайком (true) или дизлайком (false).</param>
     /// <returns>true, если отзыв успешно создан; иначе false.</returns>
-    Task<bool> CreateReviewAsync(ReviewEntity review);
+    Task<bool> AddReviewWithLikeAsync(Guid gameId, ReviewEntity review, bool isLike);
 
     /// <summary>
     /// Получает все отзывы для конкретной игры.
@@ -25,23 +27,25 @@ public interface IReviewRepository
     /// <summary>
     /// Получает отзыв пользователя для конкретной игры.
     /// </summary>
-    /// <param name="userId">Идентификатор пользователя, чье мнение нужно получить.</param>
     /// <param name="gameId">Идентификатор игры, к которой оставлен отзыв.</param>
+    /// <param name="userId">Идентификатор пользователя, чье мнение нужно получить.</param>
     /// <returns>Объект ReviewEntity, представляющий отзыв, если он существует; иначе null.</returns>
-    Task<ReviewEntity?> GetReviewByUserAndGameIdAsync(Guid userId, Guid gameId);
+    Task<ReviewEntity?> GetReviewByUserAndGameIdAsync(Guid gameId, Guid userId);
 
     /// <summary>
-    /// Обновляет существующий отзыв.
+    /// Обновляет существующий отзыв и его статус лайка или дизлайка.
     /// </summary>
+    /// <param name="gameId">Идентификатор игры, к которой оставлен отзыв.</param>
     /// <param name="review">Объект, представляющий обновленный отзыв.</param>
+    /// <param name="isLike">Указывает, является ли отзыв лайком (true) или дизлайком (false).</param>
     /// <returns>true, если отзыв успешно обновлен; иначе false.</returns>
-    Task<bool> UpdateReviewAsync(ReviewEntity review);
+    Task<bool> UpdateReviewAsync(Guid gameId, ReviewEntity review, bool isLike);
 
     /// <summary>
     /// Удаляет отзыв.
     /// </summary>
-    /// <param name="userId">Идентификатор пользователя, который оставил отзыв.</param>
     /// <param name="gameId">Идентификатор игры, к которой оставлен отзыв.</param>
+    /// <param name="userId">Идентификатор пользователя, который оставил отзыв.</param>
     /// <returns>true, если отзыв успешно удален; иначе false.</returns>
-    Task<bool> DeleteReviewAsync(Guid userId, Guid gameId);
+    Task<bool> DeleteReviewAsync(Guid gameId, Guid userId);
 }

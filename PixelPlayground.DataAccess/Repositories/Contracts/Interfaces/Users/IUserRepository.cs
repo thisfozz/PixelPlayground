@@ -37,6 +37,13 @@ public interface IUserRepository
     Task<UserEntity?> GetUserByIdAsync(Guid userId);
 
     /// <summary>
+    /// Получает идентификатор пользователя по его логину.
+    /// </summary>
+    /// <param name="login">Логин пользователя, идентификатор которого нужно получить.</param>
+    /// <returns>Идентификатор пользователя, если он существует; иначе null.</returns>
+    Task<Guid?> GetUserIdByLoginAsync(string login);
+
+    /// <summary>
     /// Получает пользователя по логину.
     /// </summary>
     /// <param name="login">Логин пользователя, которого нужно найти.</param>
@@ -73,6 +80,14 @@ public interface IUserRepository
     /// <param name="email">Новый email.</param>
     /// <returns>true, если email успешно обновлен; иначе false.</returns>
     Task<bool> UpdateEmailAsync(Guid userId, string email);
+
+    /// <summary>
+    /// Обновляет роль пользователя.
+    /// </summary>
+    /// <param name="userId">Идентификатор пользователя, чью роль нужно обновить.</param>
+    /// <param name="roleId">Идентификатор новой роли.</param>
+    /// <returns>true, если роль успешно обновлена; иначе false.</returns>
+    Task<bool> UpdateUserRoleAsync(Guid userId, Guid roleId);
 
     /// <summary>
     /// Пополняет баланс пользователя.

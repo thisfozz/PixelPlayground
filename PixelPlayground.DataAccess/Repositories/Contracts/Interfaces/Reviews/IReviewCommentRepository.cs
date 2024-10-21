@@ -9,24 +9,29 @@ namespace DataAccess.Repositories.Contracts.Interfaces.Reviews;
 public interface IReviewCommentRepository
 {
     /// <summary>
-    /// Создает новый комментарий к отзыву.
+    /// Создает новый комментарий к отзыву на игру.
     /// </summary>
-    /// <param name="comment">Объект комментария, который нужно создать.</param>
+    /// <param name="gameId">Идентификатор игры, к которой относится комментарий.</param>
+    /// <param name="reviewId">Идентификатор отзыва, к которому добавляется комментарий.</param>
+    /// <param name="comment">Объект комментария, который нужно создать, содержащий текст и информацию о пользователе.</param>
     /// <returns>true, если комментарий успешно создан; иначе false.</returns>
-    Task<bool> CreateCommentAsync(ReviewCommentEntity comment);
+    Task<bool> AddCommentAsync(Guid gameId, Guid reviewId, ReviewCommentEntity comment);
 
     /// <summary>
-    /// Получает все комментарии для конкретного отзыва.
+    /// Получает все комментарии для конкретного отзыва на игру.
     /// </summary>
-    /// <param name="reviewUserId">Идентификатор пользователя, который оставил отзыв.</param>
-    /// <param name="reviewGameId">Идентификатор игры, к которой оставлен отзыв.</param>
+    /// <param name="gameId">Идентификатор игры, к которой относится отзыв.</param>
+    /// <param name="userId">Идентификатор пользователя, который оставил отзыв.</param>
+    /// <param name="reviewId">Идентификатор отзыва, к которому оставлены комментарии.</param>
     /// <returns>Список комментариев к отзыву.</returns>
-    Task<IEnumerable<ReviewCommentEntity>> GetCommentsByReviewAsync(Guid reviewUserId, Guid reviewGameId);
+    Task<IEnumerable<ReviewCommentEntity>> GetCommentsByReviewAsync(Guid gameId, Guid userId, Guid reviewId);
 
     /// <summary>
-    /// Удаляет комментарий.
+    /// Удаляет комментарий к отзыву на игру.
     /// </summary>
+    /// <param name="gameId">Идентификатор игры, к которой относится комментарий.</param>
+    /// <param name="reviewId">Идентификатор отзыва, к которому относится комментарий.</param>
     /// <param name="commentId">Идентификатор комментария, который нужно удалить.</param>
     /// <returns>true, если комментарий успешно удален; иначе false.</returns>
-    Task<bool> DeleteCommentAsync(Guid commentId);
+    Task<bool> DeleteCommentAsync(Guid gameId, Guid reviewId, Guid commentId);
 }

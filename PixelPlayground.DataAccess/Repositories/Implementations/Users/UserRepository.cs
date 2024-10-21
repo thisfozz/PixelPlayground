@@ -31,6 +31,13 @@ public class UserRepository : IUserRepository
         _context.Users.Add(user);
         return await _context.SaveChangesAsync() > 0;
     }
+    public async Task<Guid?> GetUserIdByLoginAsync(string login)
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(user => user.Login == login);
+        if (user == null) return null;
+
+        return user.UserId;
+    }
 
     public async Task<UserEntity?> GetUserByIdAsync(Guid userId)
     {
@@ -56,6 +63,15 @@ public class UserRepository : IUserRepository
         return await _context.SaveChangesAsync() > 0;
     }
 
+    public async Task<bool> UpdatePasswordAsync(Guid userId, string newPasswordHash)
+    {
+        var user = await _context.Users.FindAsync(userId);
+        if (user == null) return false;
+
+        user.PasswordHash = newPasswordHash;
+        return await _context.SaveChangesAsync() > 0;
+    }
+
     public async Task<bool> UpdateEmailAsync(Guid userId, string email)
     {
         var user = await _context.Users.FindAsync(userId);
@@ -65,12 +81,15 @@ public class UserRepository : IUserRepository
         return await _context.SaveChangesAsync() > 0;
     }
 
-    public async Task<bool> UpdatePasswordAsync(Guid userId, string newPasswordHash)
+    public async Task<bool> UpdateUserRoleAsync(Guid userId, Guid roleId)
     {
         var user = await _context.Users.FindAsync(userId);
         if (user == null) return false;
 
-        user.PasswordHash = newPasswordHash;
+        var role = await _context.Roles.FindAsync(roleId);
+        if (role == null) return false;
+
+        user.RoleId = roleId;
         return await _context.SaveChangesAsync() > 0;
     }
 

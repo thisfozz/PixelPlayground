@@ -21,10 +21,7 @@ public class GenreRepository : IGenreRepository
 
     public async Task<bool> CreateGenreAsync(string genreName)
     {
-        if (await GenreExistsAsync(genreName))
-        {
-            return false;
-        }
+        if (await GenreExistsAsync(genreName)) return false;
 
         var newGenre = new GenreEntity
         {
@@ -56,7 +53,6 @@ public class GenreRepository : IGenreRepository
     public async Task<bool> UpdateGenreAsync(Guid genreId, string newGenreName)
     {
         var existingGenre = await _context.Genres.FindAsync(genreId);
-
         if (existingGenre == null) return false;
 
         existingGenre.Name = newGenreName;
@@ -66,7 +62,6 @@ public class GenreRepository : IGenreRepository
     public async Task<bool> DeleteGenreAsync(Guid genreId)
     {
         var existingGenre = await _context.Genres.FindAsync(genreId);
-
         if (existingGenre == null) return false;
 
         _context.Genres.Remove(existingGenre);
